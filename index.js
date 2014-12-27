@@ -19,7 +19,7 @@ app.set('view engine', 'jade');
 app.use(express.static(__dirname + '/public'));
 
 /*!
- * App Middleware
+ * External Middleware
  */
 app.use(bodyParser());
 app.use(session({
@@ -30,22 +30,39 @@ app.use(session({
 app.use(flash());
 app.use(morgan('dev'));
 
+
+if(app.get('env') === 'development'){
 /*!
  * Development Config
  */
 
+app.set('baseUrl', 'http://localhost:3000');
+
+} else if(app.get('env') === 'production'){
 /*!
  * Production Config
  */
 
+
+}
+
 /*!
  * Routing
  */
+var authRoutes = require('./routers/auth');
+var adminRoutes = require('./routers/admin');
+
 app.get('/', function(req, res, next){
 	res.render('master.jade', {
 		title: 'Home'
-	})
+	});
 });
+
+app.use('/', authRoutes);
+app.use('/admin', adminRoutes);
+
+
+
 
 /*!
  * Start Server
