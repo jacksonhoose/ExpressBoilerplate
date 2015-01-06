@@ -4,10 +4,14 @@ var express = require('express');
 	mongoose = require('mongoose'),
 	bodyParser = require('body-parser'),
 	session = require('express-session'),
-	flash = require('connect-flash');
+	flash = require('connect-flash'),
+	passport = require('passport'),
+	LocalStrategy = require('passport-local').Strategy;
 
-mongoose.connect('mongodb://localhost/myapp', function(err){
-	// console.log() or throw Error() if err
+mongoose.connect('mongodb://localhost/Test', function(err){
+	if(!err){
+		console.log('Connected to MongoDB');
+	}
 });
 
 /*!
@@ -47,6 +51,26 @@ app.set('baseUrl', 'http://localhost:3000');
 }
 
 /*!
+ * passport Config
+ */
+passport.use(new LocalStrategy(
+	function(username, password, done){
+		User.findOne({ username: username }, function(err, user){
+			if(err){ 
+				return done(err); 
+			}
+			if(!user){
+				return done(null, false, { message: 'Incorrect username.' });
+			}
+			if(!user.validPassword(password)){
+				return done(null, false, { message: 'Incorrect password.' });
+			}
+			return done(null, user);
+		});
+	}
+));
+
+/*!
  * Routing
  */
 var authRoutes = require('./routers/auth');
@@ -60,9 +84,6 @@ app.get('/', function(req, res, next){
 
 app.use('/', authRoutes);
 app.use('/admin', adminRoutes);
-
-
-
 
 /*!
  * Start Server

@@ -38,13 +38,16 @@ html(lang="en" class="no-js")
 					#navbar.navbar-collapse.collapse
 						ul.nav.navbar-nav.navbar-right
 							li
-								a(href="#") Dashboard
+								a(href="/register") Register
 							li
-								a(href="#") Settings
+								a(href="/login") Login
 							li
-								a(href="#") Profile
+								a(href="/logout") Logout
 
 		main(role="main" id="main" class="container")
+			if message
+				.message
+					span= message
 			block content
 				h1= title
 		footer(role="footer" id="footer" class="container")
