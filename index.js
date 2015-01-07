@@ -1,12 +1,12 @@
 var express = require('express');	
- 	app = module.exports = express(),
-	morgan = require('morgan'),
-	mongoose = require('mongoose'),
-	bodyParser = require('body-parser'),
-	session = require('express-session'),
-	flash = require('connect-flash'),
-	passport = require('passport'),
-	LocalStrategy = require('passport-local').Strategy;
+	 	app = module.exports = express(),
+		morgan = require('morgan'),
+		mongoose = require('mongoose'),
+		bodyParser = require('body-parser'),
+		session = require('express-session'),
+		flash = require('connect-flash'),
+		passport = require('passport'),
+		LocalStrategy = require('passport-local').Strategy;
 
 mongoose.connect('mongodb://localhost/Test', function(err){
 	if(!err){
@@ -36,17 +36,14 @@ app.use(morgan('dev'));
 
 
 if(app.get('env') === 'development'){
-/*!
- * Development Config
- */
-
-app.set('baseUrl', 'http://localhost:3000');
+	/*!
+	 * Development Config
+	 */
 
 } else if(app.get('env') === 'production'){
 /*!
  * Production Config
  */
-
 
 }
 
