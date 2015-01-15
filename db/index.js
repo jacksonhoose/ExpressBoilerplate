@@ -1,12 +1,12 @@
 var mongoose = require('mongoose');
+var connection = process.env.NODE_ENV === 'production'
+  ? 'mongodb://production/db' // production connection
+  : 'mongodb://localhost/db'  // development connection
 
-mongoose.connect('mongodb://localhost/Test');
-
-var db = mongoose.connection;
-
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function(){
+mongoose.connect(connection);
+mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
+mongoose.connection.once('open', function(){
   console.log('MongoDB connection is open.');
 });
 
-module.exports = db;
+module.exports = mongoose.connection;
