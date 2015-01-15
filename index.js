@@ -1,18 +1,13 @@
 var express = require('express');	
 	 	app = module.exports = express(),
 		morgan = require('morgan'),
-		mongoose = require('mongoose'),
 		bodyParser = require('body-parser'),
 		session = require('express-session'),
 		flash = require('connect-flash'),
 		passport = require('passport'),
 		LocalStrategy = require('passport-local').Strategy;
 
-mongoose.connect('mongodb://localhost/Test', function(err){
-	if(!err){
-		console.log('Connected to MongoDB');
-	}
-});
+
 
 /*!
  * App Config
@@ -34,19 +29,6 @@ app.use(session({
 app.use(flash());
 app.use(morgan('dev'));
 
-
-if(app.get('env') === 'development'){
-	/*!
-	 * Development Config
-	 */
-
-} else if(app.get('env') === 'production'){
-/*!
- * Production Config
- */
-
-}
-
 /*!
  * passport Config
  */
@@ -59,13 +41,15 @@ passport.use(new LocalStrategy(
 			if(!user){
 				return done(null, false, { message: 'Incorrect username.' });
 			}
-			if(!user.validPassword(password)){
-				return done(null, false, { message: 'Incorrect password.' });
-			}
-			return done(null, user);
+			user.comparePassword(password, function(err, isMatch){
+				if(!isMatch) {
+					return done(null, false, { message: 'Incorrect password.' });
+				} else {
+					return done(null, user);
+				}
+			});
 		});
-	}
-));
+	}));
 
 /*!
  * Routing
